@@ -15,22 +15,22 @@ sudo apt-get install python2.7 git-all pkg-config libncurses5-dev libssl-dev lib
 
 The two node proxies sit each on client and server side. They communicate with each other using WebRTC which punches through firewalls to establish bidirectional communication channel. The signalling between nodes is done using Signalhub a simple websocket based server. 
 
-
-
-                 +--------+                            +--------+
-                 |        |                            |        |
-+----------+     |        |       WEBRTC               |        |      +----------+
-| Client   +-----+ Node 1 +----------------------------+ Node 2 +------+ Server   |
-+----------+     |        |                            ^        |      +----------+
-                 |        |                            |        |
-                 |        |                            |        |
-                 +----+---+                            +----+---+
-                      |            +-----------+            |
-                      |            |          ||            |
-                      +------------+ SIGNALHUB|-------------+
-                          WebSocket|          ||  Websocket
-                                   +-----------+
-
+>```
+>
+>                 +--------+                            +--------+
+>                 |        |                            |        |
+> +----------+    |        |       WEBRTC               |        |      +----------+
+> | Client   +----+ Node 1 +----------------------------+ Node 2 +------+ Server   |
+> +----------+    |        |                            ^        |      +----------+
+>                 |        |                            |        |
+>                 |        |                            |        |
+>                 +----+---+                            +----+---+
+>                      |            +-----------+            |
+>                      |            |          ||            |
+>                      +------------+ SIGNALHUB|-------------+
+>                          WebSocket|          ||  Websocket
+>                                   +-----------+
+>
 
 ## How to run
 
