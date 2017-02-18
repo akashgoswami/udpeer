@@ -10,7 +10,28 @@
 ## Prerequisites 
 
 sudo apt-get install python2.7 git-all pkg-config libncurses5-dev libssl-dev libnss3-dev libexpat-dev
-  
+
+## Overview
+
+The two node proxies sit each on client and server side. They communicate with each other using WebRTC which punches through firewalls to establish bidirectional communication channel. The signalling between nodes is done using Signalhub a simple websocket based server. 
+
+
+
+                 +--------+                            +--------+
+                 |        |                            |        |
++----------+     |        |       WEBRTC               |        |      +----------+
+| Client   +-----+ Node 1 +----------------------------+ Node 2 +------+ Server   |
++----------+     |        |                            ^        |      +----------+
+                 |        |                            |        |
+                 |        |                            |        |
+                 +----+---+                            +----+---+
+                      |            +-----------+            |
+                      |            |          ||            |
+                      +------------+ SIGNALHUB|-------------+
+                          WebSocket|          ||  Websocket
+                                   +-----------+
+
+
 ## How to run
 
 Step1: Decide a unique identity for your machine (ClientIdentity), for server(ServerIdentity) and the name of common channel(Ourchannel) where you would exchange messages. Unique names should be very helpful for all 3 terms.
