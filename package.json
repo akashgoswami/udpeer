@@ -18,5 +18,13 @@
     "signalhub": "^4.8.0",
     "simple-peer": "^6.3.0",
     "wrtc": "0.0.61"
+  },
+  "bin": {
+    "udpeer": "./bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akashgoswami/udpeer.git"
   }
+  
 }
