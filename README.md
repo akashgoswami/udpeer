@@ -7,7 +7,7 @@
   If two machines could talk via WebRTC, they should also be able to exchange UDP. This is what this project is about.
   Detailed documnetation coming soon.
   
-## Prerequisites  (avoid crash due to Webrtc package)
+## Prerequisites 
 
 sudo apt-get install python2.7 git-all pkg-config libncurses5-dev libssl-dev libnss3-dev libexpat-dev
   
