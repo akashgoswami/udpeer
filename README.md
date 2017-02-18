@@ -53,15 +53,19 @@ Allocate one proxy UDP port on each of the machine. Let's call it Client proxy p
 
 That's it. 
 
-clone the github repo into a local folder. On local client
+clone the github repo into a local folder and do. 
+
 `
 npm install .
+`
+
+On local client
+`
 node index.js -i -m ClientIdentity -r ServerIdentity -c Ourchannel -p CProxy:C
 `
 
 On the server Side
 `
-npm install 
 node index.js -i -m ServerIdentity -r ClientIdentity -c Ourchannel -p SProxy:S
 `
 
