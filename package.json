@@ -1,6 +1,6 @@
 {
   "name": "udpeer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple UDP peer to peer communication proxy using WebRTC",
   "main": "index.js",
   "scripts": {
