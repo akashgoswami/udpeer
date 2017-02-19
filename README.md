@@ -28,6 +28,7 @@ webrtc requirs signalling between nodes, which is done using Signalhub (https://
 Ideally you should setup your own signalling server and specify the URL there. 
 
 Once the proxies establish a communication channel, they will expose a UDP local port on localhost. The client and sever programs will talk to these local ports instead of talking to each other. 
+
 >```
 >
 >                 +--------+                            +--------+
@@ -44,7 +45,8 @@ Once the proxies establish a communication channel, they will expose a UDP local
 >                          WebSocket|          ||  Websocket
 >                                   +-----------+
 >
-`
+
+
 ## How to run
 
 Agree upon a unique common channel name between two parties. It is simply a large string. If you are unsure, run UDPeer without a channel name and it will generate one for you. Pass this on to other party. 
@@ -57,7 +59,7 @@ That's it. Install UDPeer on both machines.
 
 On client side 
 
-`udpeer -c channelId -p CProxy:C
+`udpeer -i -c channelId -p CProxy:C
 `
 
 On the server Side
@@ -81,8 +83,8 @@ udpeer [-i] [--channel=channelID] --ports=proxy:client
 
 Example. Machine 1
 udpeer -cFQBLA7?H8N5ZHP65 -p 5000:5001
-At Machine 2
-udpeer -cFQBLA7?H8N5ZHP65 -p 6000:6001
+At Machine 2 (As initiator)
+udpeer -i -cFQBLA7?H8N5ZHP65 -p 6000:6001
 ```  
 
 If everything works well, after a while the server and client proxy shall connect via webrtc and you will see a message on console. 

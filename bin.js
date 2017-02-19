@@ -50,8 +50,8 @@ function printHelp()
     console.log("");            
     console.log("Example. Machine 1");            
     console.log("udpeer -c"+ch+" -p 5000:5001");            
-    console.log("At Machine 2");            
-    console.log("udpeer -c"+ch+" -p 6000:6001");                
+    console.log("At Machine 2 (Acting as an initiator)");            
+    console.log("udpeer -i -c"+ch+" -p 6000:6001");                
     console.log("");       
     process.exit(0);
 };
@@ -74,7 +74,7 @@ var connected = false;
 var initiator = argv.init || false;
 // Generate a unique name
 var myName = argv.myName || generator(10+Math.floor(Math.random()*10), '0123456789abcdefghijklmnopqrstuvwxyz');
-var channel = argv.channel || generator(24, '123456789ABCDEFGHJKLMNOPQRSTUVWXYZ#!?');
+var channel = argv.channel || generator(24, '123456789ABCDEFGHJKLMNOPQRSTUVWXYZ');
 var signalURLs = argv.signal || 'https://signalhub.mafintosh.com';
 var ports = [];
 var localProxyPort = 0;
@@ -124,6 +124,7 @@ if(!argv.channel){
 var peer = undefined;
 var subscription = undefined;
 var retryHandle = undefined;
+var pinger = undefined;
 
 UDPServer.on('error', function(err) {
   console.error(`UDP server Unable to bind. error:\n${err.stack}`);
@@ -135,7 +136,6 @@ UDPServer.on('error', function(err) {
 UDPServer.on('listening', () => {
   var address = UDPServer.address();
   console.log("UDP proxy Listening on",address.address+":"+address.port+" -> "+localPeerPort);  
-
   if (peer === undefined)  {
         createPeer();
   }  
@@ -145,7 +145,21 @@ UDPServer.on('listening', () => {
 UDPServer.bind(localProxyPort, localhost);
 console.log("Connecting on Channel:", channel);
 console.log("Your Identity:", myName);
+console.log("Initiator:", initiator);
+
 var hub = signalhub(channel, signalURLs);
+
+hub.subscribe("info").on('data', function (message) {
+  if (message.sender != myName && !connected){
+  console.log("Received Peer info");
+  console.log(message);  
+  if (message.initiator == initiator){
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    console.log("YOU and PEER have same initiator type=", initiator);
+    console.log("Only one of them should be initiator");        
+  }
+  }
+});
 
 UDPServer.on('message', (msg, rinfo) => {
   //console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
@@ -190,16 +204,21 @@ function createPeer()
           }
     })
 
+    pinger = setInterval(function(){
+      hub.broadcast("info", { sender: myName, initiator: initiator});       
+    },10000);
+
     peer = new SimplePeer({ initiator: initiator, wrtc: wrtc, trickle: false , objectMode: true, reconnectTimer: true });    
     
     peer.on('signal', function (msg) {
         // when peer1 has signaling data, give it to peer2 somehow
         //var signal = Buffer(JSON.stringify(data)).toString('base64');    
-        hub.broadcast("*", { sender: myName, data: msg});    
+        hub.broadcast("*", { sender: myName, initiator: initiator, data: msg});    
         
         if (initiator && !connected && retryHandle === undefined){
             retryHandle = setInterval(function(){
-                hub.broadcast("*", { sender: myName, data: msg});        
+                console.log("Retry sending", msg.type, "on channel",channel);              
+                hub.broadcast("*", { sender: myName, initiator: initiator, data: msg});  
             },10000);
         }
     })
@@ -212,6 +231,10 @@ function createPeer()
         clearInterval(retryHandle);
         retryHandle = undefined;
       }
+      if (pinger){
+        clearInterval(pinger);
+        pinger = undefined;
+      }      
       subscription.destroy();
       subscription = undefined;
       
